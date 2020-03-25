@@ -40,4 +40,4 @@ int main() {
   }
   return 0;
 }
-} // namespace uva_B
+}

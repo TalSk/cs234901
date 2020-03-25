@@ -1,7 +1,6 @@
 //
 // Created by Tal Skverer on 24/03/2020.
 //
-#include "../main.h"
 #include <algorithm>
 #include <vector>
 #include <iostream>

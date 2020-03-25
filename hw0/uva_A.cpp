@@ -23,6 +23,7 @@ typedef unsigned long long ull;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
 
+namespace uva_A {
 int main() {
   ll W, N, w, l;
   cin >> W;
@@ -39,4 +40,5 @@ int main() {
   // length. Should return int.
   cout << total_size / W << endl;
   return 0;
+}
 }
