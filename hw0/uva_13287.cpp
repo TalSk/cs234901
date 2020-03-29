@@ -23,21 +23,21 @@ typedef unsigned long long ull;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
 
-namespace uva_B {
 int main() {
-  ll num;
-  cin >> num;
-  string word;
-  vector<string> perms;
-  while (num) {
-    cin >> word;
-    sort(word.begin(),
-         word.end()); // Sort string to get the permutations alphabetically
-    do {
-      cout << word << endl;
-    } while (next_permutation(word.begin(), word.end()));
-    num--;
+  ull W, N, w, l;
+  while(cin >> W){
+      cin >> N;
+      ll total_size = 0;
+      // Calculate the cumulative sum of each piece's area.
+      while (N) {
+        cin >> w;
+        cin >> l;
+        total_size += w * l;
+        N--;
+      }
+      // We now have the area of the whole cake. Divide by the width to get the
+      // length. Should return int.
+      cout << total_size / W << endl;
   }
   return 0;
-}
 }
