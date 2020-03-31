@@ -5,8 +5,11 @@ set(CMAKE_CXX_STANDARD 11)            # Enable c++14 standard
 # Add main.cpp file of project root directory as source file
 set(LESSON1_FILES lesson1/uva_10945.cpp lesson1/uva_11364.cpp lesson1/uva_573.cpp lesson1/uva_156.cpp)
 set(HW0_FILES hw0/uva_13287.cpp hw0/uva_195.cpp)
+set(LESSON2_FILES lesson2/uva_10954.cpp lesson2/uva_11286.cpp lesson2/uva_11690.cpp lesson2/uva_11933.cpp lesson2/uva_E.cpp)
 set(MAIN main.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
-# add_executable(lesson1e ${MAIN})
-# add_executable(hw0e ${MAIN})
+add_executable(lesson1e ${LESSON1_FILES})
+add_executable(hw0e ${HW0_FILES})
+add_executable(lesson2e ${LESSON2_FILES})
+add_executable(main ${MAIN})
