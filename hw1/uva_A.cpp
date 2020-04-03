@@ -24,73 +24,83 @@ typedef unsigned long long ull;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
 
-const ull N = 5000000;  // limit for array size
-ull n = 2000000;  // array size
+namespace segmentTreeA {
+const ull N = 5000000; // limit for array size
+ull n = 2000000;       // array size
 ull t[2 * N];
 
-void build() {  // build the tree
-  for (ull i = n - 1; i > 0; --i) t[i] = t[i<<1] + t[i<<1|1];
+void reset(ull default_value=0){
+  // Reset array
+  for (ull i = 0; i < n; ++i) {
+    t[n + i] = default_value; // init array
+  }
+}
+void build() { // build the tree
+  for (ull i = n - 1; i > 0; --i)
+    t[i] = t[i << 1] + t[i << 1 | 1];
 }
 
-void modify(ull p, ull value) {  // set value at position p
-  for (t[p += n] = value; p > 1; p >>= 1) t[p>>1] = t[p] + t[p^1];
+void modify(ull p, ull value) { // set value at position p
+  for (t[p += n] = value; p > 1; p >>= 1)
+    t[p >> 1] = t[p] + t[p ^ 1];
 }
 
-int query(ull l, ull r) {  // sum on interval [l, r)
+int query(ull l, ull r) { // sum on interval [l, r)
   ull res = 0;
   for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
-    if (l&1) res += t[l++];
-    if (r&1) res += t[--r];
+    if (l & 1)
+      res += t[l++];
+    if (r & 1)
+      res += t[--r];
   }
   return res;
 }
+}
 
 int A() {
-  ull m, nn;
-  while(cin >> nn){
-    // cout << "START" << endl;
+  ull m, n;
+  while(cin >> n){
     cin >> m;
-    if (nn == 0 && m == 0){
+    if (n == 0 && m == 0){
       break;
     }
-    // Reset array
-    for (ull i = 0; i < n; ++i) {
-      t[n + i] = 0; // init array
-    }
-    build();
+    segmentTreeA::reset();
+    segmentTreeA::build();
 
     ull start, end;
     bool flag = false;
-    for (ull j = 0; j < nn; ++j) {
+    for (ull j = 0; j < n; ++j) {
       cin >> start;
       cin >> end;
 
-      // cout << "querying " << start << ", " << end << endl;
-      if (query(start, end) != 0){
-        // cout << "true " << query(start, end) << endl;
+      if (segmentTreeA::query(start, end) != 0){
+        // Found a collision
         flag = true;
         break;
       }
+      // "Occupy" every minute of the current times
       for (ull i = start; i < end; ++i) {
-        // cout << "modify " << i << endl;
-        modify(i, 1);
+        segmentTreeA::modify(i, 1);
       }
     }
+
     ull repeat;
+    // Not needed if flag is false, but do it anyway to flush the input.
     for (ull k = 0; k < m; ++k) {
       cin >> start;
       cin >> end;
       cin >> repeat;
       ull base = 0;
+      // Iterate over repetitions until the start time exceeds the maximum possible.
       while (base + start <= 1000000){
-        // cout << "querying " << base + start << ", " << base + end << endl;
-        if (query(base + start, base + end) != 0){
-          // cout << "true " << query(base + start, base + end) << endl;
+        if (segmentTreeA::query(base + start, base + end) != 0){
+          // Found a collision
           flag = true;
           break;
         }
+        // "Occupy" every minute of the current times
         for (ull i = base + start; i < base + end; ++i) {
-          modify(i, 1);
+          segmentTreeA::modify(i, 1);
         }
         base += repeat;
       }
