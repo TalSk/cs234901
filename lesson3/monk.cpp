@@ -22,7 +22,7 @@ typedef unsigned long long ull;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
 
-#define eps 1e-12
+#define eps 1e-9
 vector<pii> ascent;
 vector<pii> descent;
 ull total_height;
@@ -90,14 +90,9 @@ int main() {
       total_time_d += t;
     }
 
-    double lo = 0.0, hi = 100, mid = 0.0, ans = 0.0;
+    double lo = 0.0, hi = 5000 * 100, mid = 0.0, ans = 0.0;
     while (fabs(hi - lo) > eps) {
       mid = (lo + hi) / 2.0;
-//      cout << "checking " << setprecision(10) << mid << endl;
-//      cout << "lo " << setprecision(10)  << lo << endl;
-//      cout << "hi " << hi << endl;
-//      cout << "ascent_at_t(mid) " << ascent_at_t(mid) << endl;
-//      cout << "descent_at_t(mid) " << descent_at_t(mid) << endl;
       if (ascent_at_t(mid) >= descent_at_t(mid)) {
         hi = mid;
         ans = hi;
@@ -106,7 +101,7 @@ int main() {
       }
     }
 
-    cout << setprecision(7) << ans << endl;
+    cout << setprecision(7) << mid;
   }
   return 0;
 }

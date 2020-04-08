@@ -57,14 +57,6 @@ ll get_cheapest(ll cur, ll prev) {
 int main() {
   while (cin >> N) {
     table = new vector<vector<ll>>(N + 1, vector<ll>(N, -1));
-//    for (int i = 1; i < N + 1; ++i) {
-//      cout << i << "\t";
-//      for (int j = 1; j < N; ++j) {
-//        cout << (*table)[i][j] << "\t";
-//      }
-//      cout << endl;
-//    }
-//    cout << endl;
 
     costs = new vector<ll>(N + 1, 0);
     ull cur;
@@ -72,10 +64,6 @@ int main() {
       cin >> cur;
       (*costs)[i] = cur;
     }
-//    for (auto cost : *costs) {
-//      cout << cost << " ";
-//    }
-//    cout << endl;
     cout << get_cheapest(2,1) + (*costs)[2] << endl;
   }
   return 0;
