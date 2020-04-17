@@ -1,0 +1,11 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+We create a sum segment tree with size N=1,000,000 (one for each minute in the calendar).
+Then, upon getting a one-time task, we "occupy" its time by adding 1 to the relevant minutes in the segment tree.
+When getting a repeat task, we do a similar method, only iterating over the repeated times until the start time of the task exceeds N.
+Also, whenever we process any task, we first query the relevant segment, and if its sum is more than 0, there's at least one minute occupied within the task range, and we found a conflict and can report accordingly.
+If we haven't and the process is done, we will report that there's no conflict.
+With Big-O notation, the time complexity is O(m*log(N) + n*log(N)).
+Realisticly, the values is m and n are relatively small, and the worst-case scenario is if we get a repeat task such as 0 1 1, which will force us to iterate over the entire segment tree.
+Because in any worst case we iterate over the entire tree once (because then everything will be occupied), this caps the operations at around N~1m.
+Besides edge-cases with adjacent tasks (to each other or to the time bounds), there isn't other interesting cases.

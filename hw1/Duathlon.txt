@@ -1,0 +1,10 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+This problem is similar to the one with the monk we saw in the lesson.
+If we look at the graph of the cheater "winning time" (the time he finishes the race minus the time of the fastest competitor) against the value of r, going from 0 to 100, the problem requires finding the r that gives the maximum of this function (and if its negative - report that they cannot win).
+This function is concave, thefore, as presented in the class, it is solveable using ternary-search.
+We start with the bounds on r - 0 and t and check the value of the function on the midpoint each third, then dispose of the third where the function value is flower (since the maximum value cannot be there) until left and right bounds are close enough.
+
+Since this algorithm works with time complexity of O(log(n)) even getting a bound of 1e-9 is realisticly relatively quick.
+
+The edge-case that was the most problematic for me is time when r reaches 0 or t but since it is a double some rounding magic needs to happen.

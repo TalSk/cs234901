@@ -1,0 +1,17 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+For this problem, we prepare a max segment tree of size N=200,000, along with tree arrays: array, same_left and same_right.
+Array will hold the sequence of integers, same_left will hold for each index the number of indices to the left that contain the same number as the one in this index, and same_right similarly to the right of the number.
+
+We populate array and same_left while getting the ordered sequence as input.
+The segment is also updated: for each position x in the tree, we accumulate the frequency of this number in the whole sequence.
+One reverse iteration is needed to populate the same_right array.
+
+Then, on receiveing any query, we use same_right and same_left to "fix" requested indices to jump to the begining and end of the next and previous number respectively, and then a query on the segment will return the correct value of these indices.
+Then, all is left to do is to find the maximum value between the left numbers, the right numbers, and the segment tree response.
+
+Populating the arrays is linear in n and the segment tree requires O(n*log(N)
+Each query is fixed in O(1) using the arrays, and then query takes O(log(N)), therefore, O(q*log(N)).
+In total, (n*log(N) + q*(log(N))) which realisticly is around 2.5m operations, worst-case.
+
+There aren't interesting edge cases, querying on different positions on the example array cover most of them.

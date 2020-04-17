@@ -1,0 +1,15 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+Since this problem has multiple available orders of the canvasses and does not force you to use the given order (something I took a while to realize...), starting from some canvass order and solving won't necessary find the correct answer.
+Therefore, we need to start thinking about the painting tree (a binary tree, since we can only split each node to two parts), and start from the bottom.
+Because every canvass's length is added to the final sum each time it appears, we would like to put "costly" canvasses as high as we can, while keep "cheap" for the end.
+
+Note: having a pair of canvasses is easily solved - the price is exactly the sum of the two canvasses.
+Now, working our way from the bottom of the tree, we pick two canvasses that has the lowest value to be a pair, and re-add them to the canvass list as their sum (Because on any higher level on the tree they appear on their sum must also be added).
+Then pick the next lowest values to pair them and so on until only one node is left.
+I implemented this algorithm using minimum heap almost exactly like the uva_10954 problem (cost of adding numbers) from lesson 2.
+
+Building the heap from the input vector - O(N*log(N)). The "take two insert one" algorithm - O(N). Therefore the total complexity is O(N*log(N)) (for each test case).
+
+The edge-case that initially showed me the direction of thinking was taking the same canvasses in different order.
+Also, I think I managed to solve it with O(N^2) complexity, so adding a test case with 100,000 canvassses of size 100,000 each easily got it stuck forever :)
