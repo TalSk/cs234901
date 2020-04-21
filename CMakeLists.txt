@@ -10,8 +10,8 @@ set(HW1_FILES hw1/uva_A.cpp hw1/uva_B.cpp)
 set(MAIN main.cpp)
 
 
-add_executable(hw1C hw1/uva_C.cpp)
-add_executable(hw1D hw1/uva_D.cpp)
+#add_executable(hw1C hw1/uva_C.cpp)
+#add_executable(hw1D hw1/uva_D.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 #add_executable(lesson1e ${LESSON1_FILES})
@@ -22,3 +22,8 @@ add_executable(hw1D hw1/uva_D.cpp)
 #add_executable(l3B lesson3/B.cpp)
 #add_executable(l3C lesson3/C.cpp)
 #add_executable(l3D lesson3/D.cpp)
+add_executable(l4A lesson4/A.cpp)
+add_executable(l4B lesson4/B.cpp)
+add_executable(l4C lesson4/C.cpp)
+add_executable(l4D lesson4/D.cpp)
+add_executable(l4E lesson4/E.cpp)
