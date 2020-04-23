@@ -1,6 +1,10 @@
-//
-// Created by Tal Skverer on 21/04/2020.
-//
+/*
+NOTICE:
+============
+Our team (Noa, Hadas and I) worked on this exercise together while the competition took place
+and only small fixes were done afterwards, therefore the code might be similar.
+============
+*/
 #include <algorithm>
 #include <bitset>
 #include <cmath>
