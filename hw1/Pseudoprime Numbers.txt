@@ -1,0 +1,7 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+The required truth value for this question is simply ((a ** p) % p == a). 
+Looking at the possible max value of p/a (10 ** 9) a simple power function will just not do, both for time constraints and not overflowing.
+Therefore, I implemented my own version of the fast exponent algorithm as seen in the lecture, that also applies a mod on each calculation step.
+This has a time complexity of O(log(p)) which in this case approximately equals to just 20!
+The question was easy enough that no extra test-cases were needed, but I did learn that you must return 0 from the main function or else you get a run-time error :(.
