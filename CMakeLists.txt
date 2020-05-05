@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)  # CMake version check
-project(competitive)               # Create project "simple_example"
-set(CMAKE_CXX_STANDARD 11)            # Enable c++14 standard
+project(competitive)               # Create project
+set(CMAKE_CXX_STANDARD 11)            # Enable c++11 standard
 
 # Add main.cpp file of project root directory as source file
 set(LESSON1_FILES lesson1/uva_10945.cpp lesson1/uva_11364.cpp lesson1/uva_573.cpp lesson1/uva_156.cpp)
@@ -10,10 +10,11 @@ set(HW1_FILES hw1/uva_A.cpp hw1/uva_B.cpp)
 set(MAIN main.cpp)
 
 
-#add_executable(hw1C hw1/uva_C.cpp)
-#add_executable(hw1D hw1/uva_D.cpp)
-add_executable(hw1E hw1/uva_E.cpp)
-add_executable(hw1F hw1/uva_F.cpp)
+#add_executable(l5A lesson5/A.cpp)
+#add_executable(l5B lesson5/B.cpp)
+add_executable(l5C lesson5/brexit.cpp)
+#add_executable(l5D lesson5/D.cpp)
+#add_executable(l5E lesson5/E.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 #add_executable(lesson1e ${LESSON1_FILES})
@@ -29,3 +30,7 @@ add_executable(hw1F hw1/uva_F.cpp)
 #add_executable(l4C lesson4/C.cpp)
 #add_executable(l4D lesson4/D.cpp)
 #add_executable(l4E lesson4/E.cpp)
+#add_executable(hw1C hw1/uva_C.cpp)
+#add_executable(hw1D hw1/uva_D.cpp)
+#add_executable(hw1E hw1/uva_E.cpp)
+#add_executable(hw1F hw1/uva_F.cpp)
