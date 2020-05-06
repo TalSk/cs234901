@@ -1,0 +1,8 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+After creating the graph for the cities and their roads, after receiving an index of a captured city, we need to find all cities that are of distance less than k from it, and that weren't of distnace less than k of any previous captured city.
+Naively running Dijkstra's algorith won't hold the complexity, since in the test-case where the number of captured cities is N and the distance is over k, we will be in the O(N^2 * log(M)) region which is 10,000 ** 2 * log(100,000), way above 10 million.
+To improve the algorithm, we will change Dijkstra to not calculate the distance of a city if it has passed distnace k, as well as saving the distances calculated between iteration of Dijkstra so we can ignore any of these cities previously seen with shorter distance.
+
+This is indeed an improvement. I think that the complexity is a little tough to calculate - I thought of two worst-case scenarios, one with cities that are always further than length k apart, which will require O(N^2), and the other is that the graph is where there's a middle cities and strings of k cities to each side, which will require (O(N * k * log(M))).
+Both are below the realistic complexity threshold and the tests indeed passed.
