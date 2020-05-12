@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <bitset>
+#include <cassert>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -34,21 +35,10 @@ using namespace std;
 #define PI                                                                     \
   acos(-1.0) // important constant; alternative #define PI (2.0 * acos(0.0))
 
-double DEG_to_RAD(double d) { return d * PI / 180.0; }
-
-double RAD_to_DEG(double r) { return r * 180.0 / PI; }
-
-// struct point_i { int x, y; };    // basic raw form, minimalist mode
-struct point_i {
-  int x, y;                // whenever possible, work with point_i
-  point_i() { x = y = 0; } // default constructor
-  point_i(int _x, int _y) : x(_x), y(_y) {}
-}; // user-defined
-
 struct point {
-  double x, y;             // only used if more precision is needed
+  long double x, y;             // only used if more precision is needed
   point() { x = y = 0.0; } // default constructor
-  point(double _x, double _y) : x(_x), y(_y) {} // user-defined
+  point(long double _x, long double _y) : x(_x), y(_y) {} // user-defined
   bool operator<(point other) const {           // override less than operator
     if (fabs(x - other.x) > EPS)                // useful for sorting
       return x < other.x; // first criteria , by x-coordinate
@@ -58,64 +48,26 @@ struct point {
   bool operator==(point other) const {
     return (fabs(x - other.x) < EPS && (fabs(y - other.y) < EPS));
   }
-  point operator-(point other) const {
-    return {x - other.x, y - other.y};
-  }
+  point operator-(point other) const { return {x - other.x, y - other.y}; }
 };
 
-double dist(point p1, point p2) { // Euclidean distance
+long double dist(point p1, point p2) { // Euclidean distance
   // hypot(dx, dy) returns sqrt(dx * dx + dy * dy)
   return hypot(p1.x - p2.x, p1.y - p2.y);
 } // return double
 
-// rotate p by theta degrees CCW w.r.t origin (0, 0)
-point rotate(point p, double theta) {
-  double rad = DEG_to_RAD(theta); // multiply theta with PI / 180.0
-  return point(p.x * cos(rad) - p.y * sin(rad),
-               p.x * sin(rad) + p.y * cos(rad));
-}
-
 struct line {
-  double a, b, c;
+  long double a, b, c;
 }; // a way to represent a line
-
-// the answer is stored in the third parameter (pass by reference)
-void pointsToLine(point p1, point p2, line &l) {
-  if (fabs(p1.x - p2.x) < EPS) { // vertical line is fine
-    l.a = 1.0;
-    l.b = 0.0;
-    l.c = -p1.x; // default values
-  } else {
-    l.a = -(double)(p1.y - p2.y) / (p1.x - p2.x);
-    l.b = 1.0; // IMPORTANT: we fix the value of b to 1.0
-    l.c = -(double)(l.a * p1.x) - p1.y;
-  }
-}
 
 // not needed since we will use the more robust form: ax + by + c = 0 (see
 // above)
 struct line2 {
-  double m, c;
+  long double m, c;
 }; // another way to represent a line
-
-int pointsToLine2(point p1, point p2, line2 &l) {
-  if (abs(p1.x - p2.x) < EPS) { // special case: vertical line
-    l.m = INF;                  // l contains m = INF and c = x_value
-    l.c = p1.x;                 // to denote vertical line x = x_value
-    return 0; // we need this return variable to differentiate result
-  } else {
-    l.m = (double)(p1.y - p2.y) / (p1.x - p2.x);
-    l.c = p1.y - l.m * p1.x;
-    return 1; // l contains m and c of the line equation y = mx + c
-  }
-}
 
 bool areParallel(line l1, line l2) { // check coefficients a & b
   return (fabs(l1.a - l2.a) < EPS) && (fabs(l1.b - l2.b) < EPS);
-}
-
-bool areSame(line l1, line l2) { // also check coefficient c
-  return areParallel(l1, l2) && (fabs(l1.c - l2.c) < EPS);
 }
 
 // returns true (+ intersection point) if two lines are intersect
@@ -133,31 +85,31 @@ bool areIntersect(line l1, line l2, point &p) {
 }
 
 struct vec {
-  double x, y; // name: `vec' is different from STL vector
-  vec(double _x, double _y) : x(_x), y(_y) {}
+  long double x, y; // name: `vec' is different from STL vector
+  vec(long double _x, long double _y) : x(_x), y(_y) {}
 };
 
 vec toVec(point a, point b) { // convert 2 points to vector a->b
-  return vec(b.x - a.x, b.y - a.y);
+  return {b.x - a.x, b.y - a.y};
 }
 
-vec scale(vec v, double s) { // nonnegative s = [<1 .. 1 .. >1]
-  return vec(v.x * s, v.y * s);
+vec scale(vec v, long double s) { // nonnegative s = [<1 .. 1 .. >1]
+  return {v.x * s, v.y * s};
 } // shorter.same.longer
 
 point translate(point p, vec v) { // translate p according to v
-  return point(p.x + v.x, p.y + v.y);
+  return {p.x + v.x, p.y + v.y};
 }
 
 // convert point and gradient/slope to line
-void pointSlopeToLine(point p, double m, line &l) {
+void pointSlopeToLine(point p, long double m, line &l) {
   l.a = -m; // always -m
   l.b = 1;  // always 1
   l.c = -((l.a * p.x) + (l.b * p.y));
 } // compute this
 
 void closestPoint(line l, point p, point &ans) {
-  line perpendicular;    // perpendicular to l and pass through p
+  line perpendicular{};    // perpendicular to l and pass through p
   if (fabs(l.b) < EPS) { // special case 1: vertical line
     ans.x = -(l.c);
     ans.y = p.y;
@@ -176,60 +128,22 @@ void closestPoint(line l, point p, point &ans) {
   areIntersect(l, perpendicular, ans);
 }
 
-// returns the reflection of point on a line
-void reflectionPoint(line l, point p, point &ans) {
-  point b;
-  closestPoint(l, p, b); // similar to distToLine
-  vec v = toVec(p, b);   // create a vector
-  ans = translate(translate(p, v), v);
-} // translate p twice
+long double dot(vec a, vec b) { return (a.x * b.x + a.y * b.y); }
 
-double dot(vec a, vec b) { return (a.x * b.x + a.y * b.y); }
-
-double norm_sq(vec v) { return v.x * v.x + v.y * v.y; }
+long double norm_sq(vec v) { return v.x * v.x + v.y * v.y; }
 
 // returns the distance from p to the line defined by
 // two points a and b (a and b must be different)
 // the closest point is stored in the 4th parameter (byref)
-double distToLine(point p, point a, point b, point &c) {
+long double distToLine(point p, point a, point b, point &c) {
   // formula: c = a + u * ab
   vec ap = toVec(a, p), ab = toVec(a, b);
-  double u = dot(ap, ab) / norm_sq(ab);
+  long double u = dot(ap, ab) / norm_sq(ab);
   c = translate(a, scale(ab, u)); // translate a to c
   return dist(p, c);
 } // Euclidean distance between p and c
 
-// returns the distance from p to the line segment ab defined by
-// two points a and b (still OK if a == b)
-// the closest point is stored in the 4th parameter (byref)
-double distToLineSegment(point p, point a, point b, point &c) {
-  vec ap = toVec(a, p), ab = toVec(a, b);
-  double u = dot(ap, ab) / norm_sq(ab);
-  if (u < 0.0) {
-    c = point(a.x, a.y); // closer to a
-    return dist(p, a);
-  } // Euclidean distance between p and a
-  if (u > 1.0) {
-    c = point(b.x, b.y); // closer to b
-    return dist(p, b);
-  } // Euclidean distance between p and b
-  return distToLine(p, a, b, c);
-} // run distToLine as above
-
-double angle(point a, point o, point b) { // returns angle aob in rad
-  vec oa = toVec(o, a), ob = toVec(o, b);
-  return acos(dot(oa, ob) / sqrt(norm_sq(oa) * norm_sq(ob)));
-}
-
-double cross(vec a, vec b) { return a.x * b.y - a.y * b.x; }
-
-//// another variant
-// int area2(point p, point q, point r) { // returns 'twice' the area of this
-// triangle A-B-c
-//  return p.x * q.y - p.y * q.x +
-//         q.x * r.y - q.y * r.x +
-//         r.x * p.y - r.y * p.x;
-//}
+long double cross(vec a, vec b) { return a.x * b.y - a.y * b.x; }
 
 // note: to accept collinear points, we have to change the `> 0'
 // returns true if point r is on the left side of line pq
@@ -237,122 +151,49 @@ bool ccw(point p, point q, point r) {
   return cross(toVec(p, q), toVec(p, r)) > 0;
 }
 
-// returns true if point r is on the same line as the line pq
-bool collinear(point p, point q, point r) {
-  return fabs(cross(toVec(p, q), toVec(p, r))) < EPS;
-}
-double inf = 1 << 31;
-
-bool PointInPolygon(vector<point> points, point p) {
-  bool c = false;
-
-  for (int i = 0; i < points.size(); ++i) {
-    int j = (i + 1) % points.size();
-    if ( (p.y < points[i].y != p.y < points[j].y) && (p.x < points[i].x + (points[j].x-points[i].x)*(p.y-points[i].y)/(points[j].y-points[i].y)) ) c = !c;
+// Returns -1 if point p to the left of the line a,b, 0 if it's on the line and 1 if it's to the right.
+int left(point a, point b, point c){
+  long double det = (a.x - c.x) * (b.y - c.y) - (b.x - c.x) * (a.y - c.y);
+  if (det < 0){
+    return -1;
   }
-
-  return c;
+  if (det > 0){
+    return 1;
+  }
+  return 0;
 }
 
-double dot(point p, point q){
-  return p.x * q.x + p.y * q.y;
+// Returns true if point p is inside the triangle defined by points a,b,c.
+bool IsInTriangle(point p, point a, point b, point c){
+  // This function assumes the triangle a, b, c is ordered clockwise.
+  int left_a_b = left(p, a, b);
+  int left_b_c = left(p, b, c);
+  int left_c_a = left(p, c, a);
+
+  // The point is in if it has no points on the left side or no points of the right side of all edges.
+  bool has_left = left_a_b == -1 or left_b_c == -1 or left_c_a == -1;
+  bool has_right = left_a_b == 1 or left_b_c == 1 or left_c_a == 1;
+  return not(has_left and has_right);
 }
 
-long long cross(point p, point q){
-  return p.x * q.y - p.y * q.x;
-}
+bool IsInConvexPolygon(point p, vector<point> convex_poly) {
+  ull l = convex_poly.size();
+  assert(l >= 3);
 
-bool parallel(point a, point b, point c, point d){
-  return abs(cross(a - b, c - d)) < EPS;
-}
-
-bool PointOnPolygon(vector<point> points, point p){
-  int i, j, nvert = points.size();
-  for (i = 0, j = nvert - 1; i < nvert; j = i++) {
-    if (dist(points[i],p) < EPS or dist(points[j],p) < EPS){
-      return true;
+  // Binary search to find between which segments v0 - vi and v0 - vi+1 does p reside
+  ull low = 1, high = l - 1;
+  while(low < high - 1){
+    ull mid = (low + high) / 2;
+    if (ccw(convex_poly[0], convex_poly[mid], p)){
+      high = mid;
     }
-    if (parallel(p, points[i], p, points[j]) and dot(p - points[i], p - points[j]) < 0){
-      return true;
+    else {
+      low = mid;
     }
   }
-  return false;
-}
-
-int sgn(ll val){
-  return val > 0 ? 1 : (val == 0 ? 0 : -1);
-}
-
-long long cross(point a, point b, point c){
-  return cross(b - a, c - a);
-}
-
-bool pointInTriangle(point a, point b, point c, point p){
-  long long s1 = abs(cross(a, b, c));
-  long long s2 = abs(cross(p, a, b)) + abs(cross(p, b, c)) + abs(cross(p, c, a));
-  return s1 == s2;
-}
-
-
-bool pointInConvexPolygon(vector<point> seq, point p){
-  ull n = seq.size();
-  if(cross(seq[0],(p)) != 0 && sgn(cross(seq[0], (p))) != sgn(cross(seq[0], (seq[n - 1]))))
-    return false;
-  if(cross(seq[n - 1], (p)) != 0 && sgn(cross(seq[n - 1], (p))) != sgn(cross(seq[n - 1], (seq[0]))))
-    return false;
-
-  if(cross(seq[0], (p)) == 0)
-    return dot(seq[0], seq[0]) >= dot(p, p);
-
-  ull l = 0, r = n - 1;
-  while(r - l > 1){
-    ull mid = (l + r)/2;
-    ull pos = mid;
-    if(cross(seq[pos], (p)) >= 0)l = mid;
-    else r = mid;
-  }
-  int pos = l;
-  return pointInTriangle(seq[pos], seq[pos + 1], point(0, 0), p);
-}
-
-bool IsInConvexPolygon(point testPoint, vector<point> polygon)
-{
-  //n>2 Keep track of cross product sign changes
-  ll pos = 0;
-  ll neg = 0;
-
-  for (ll i = 0; i < polygon.size(); i++)
-  {
-    //If point is in the polygon
-    if (polygon[i] == testPoint)
-      return true;
-
-    //Form a segment between the i'th point
-    ll x1 = polygon[i].x;
-    ll y1 = polygon[i].y;
-
-    //And the i+1'th, or if i is the last, with the first point
-    ll i2 = i < polygon.size() - 1 ? i + 1 : 0;
-
-    ll x2 = polygon[i2].x;
-    ll y2 = polygon[i2].y;
-
-    ll x = testPoint.x;
-    ll y = testPoint.y;
-
-    //Compute the cross product
-    ll d = (x - x1) * (y2 - y1) - (y - y1) * (x2 - x1);
-
-    if (d > 0) pos++;
-    if (d < 0) neg++;
-
-    //If the sign changes, then point is outside
-    if (pos > 0 && neg > 0)
-      return false;
-  }
-
-  //If no change in direction, then on same side of all segments, and thus inside
-  return true;
+  // Point is between segment [0, low] to [0, low + 1]
+  assert(low < l);
+  return IsInTriangle(p, convex_poly[0], convex_poly[low], convex_poly[low + 1]);
 }
 
 vector<point> convex_hull(vector<point> Points) {
@@ -418,14 +259,14 @@ vector<point> convex_hull(vector<point> Points) {
   reverse(CH.begin(), CH.end()); // ccw -> cw
   return CH;
 }
-int main(){
+int main() {
   ull L, S;
-  while(cin >> L){
+  while (cin >> L) {
     vector<point> points(L);
-    ll x,y;
+    long double x, y;
     for (int i = 0; i < L; ++i) {
       cin >> x >> y;
-      points[i] = point(x,y);
+      points[i] = point(x, y);
     }
 
     auto CH = convex_hull(points);
@@ -434,7 +275,7 @@ int main(){
     ull count = 0;
     for (int j = 0; j < S; ++j) {
       cin >> x >> y;
-      if (IsInConvexPolygon(point(x,y), CH)){
+      if (IsInConvexPolygon(point(x, y), CH)) {
         count++;
       }
     }
