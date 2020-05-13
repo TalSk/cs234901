@@ -9,4 +9,5 @@ We use the fact that any bounding rectangle has at least one edge parallel to at
 This creates a new "axis" on which the rectangle will be on. Now, we need to take a perpendicular from any point on the polygon to base and perp_base to find out the minimum edge of this rectagle.
 Thus, we iterate over any other point on the polygon, and project the vector from the origin to the point on both the base and the perp_base, while saving variables min_base, max_base and max_base_perp that denote the minimum and maximum points of the base edge, and the maximum point of the perp base edge respectively (It is garuanteed that the minimum point of the perp base is 0, because it resides on the regular base).
 
-This algorithm assumes that the polygon is ordered counter-clockwise so we reverse the input. (Another solution would be to reverse the perpendicular direction but this requires more changes to the algorithm)
+This algorithm assumes that the polygon is ordered counter-clockwise so we reverse the input. (Another solution would be to reverse the perpendicular direction but this requires more changes to the algorithm).
+Since it iterates over all points in the polygon for every point pair, its complexity is O(n^2). Because in this case n is exteremely small (up to 20), this is well in the safe zone.
