@@ -63,18 +63,12 @@ struct point {
 
   point operator-(point other) const { return {x - other.x, y - other.y}; }
 
-  point operator*(double other) const{
-    return {x * other, y * other};
-  }
-  long double operator* (point other) const{
-    return x * other.x + y * other.y;
-  }
-  point operator +(point other) const{
-    return {x + other.x, y + other.y};
-  }
+  point operator*(double other) const { return {x * other, y * other}; }
+  long double operator*(point other) const { return x * other.x + y * other.y; }
+  point operator+(point other) const { return {x + other.x, y + other.y}; }
 };
 
-double dist(point p1, point p2) { // Euclidean distance
+double dist(const point &p1, const point &p2) { // Euclidean distance
   // hypot(dx, dy) returns sqrt(dx * dx + dy * dy)
   return hypot(p1.x - p2.x, p1.y - p2.y);
 } // return double
@@ -244,10 +238,10 @@ double cross(vec a, vec b) { return a.x * b.y - a.y * b.x; }
 
 // note: to accept collinear points, we have to change the `> 0'
 // returns true if point r is on the left side of line pq
-//bool ccw(point p, point q, point r) {
+// bool ccw(point p, point q, point r) {
 //  return cross(toVec(p, q), toVec(p, r)) > 0;
 //}
-bool ccw(point a, point b, point c){
+bool ccw(point a, point b, point c) {
   return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 }
 
@@ -264,7 +258,7 @@ long double area(vector<point> poly) {
   return abs(0.5 * shoelace_sum);
 }
 
-bool PointInPolygon(vector<point> points, point p) {
+bool PointInPolygon(const vector<point> &points, const point &p) {
   bool c = false;
 
   for (ull i = 0; i < points.size(); ++i) {
@@ -278,14 +272,14 @@ bool PointInPolygon(vector<point> points, point p) {
   return c;
 }
 
-double dot(point p, point q) { return p.x * q.x + p.y * q.y; }
+double dot(const point &p, const point &q) { return p.x * q.x + p.y * q.y; }
 
-double cross(point p, point q) { return p.x * q.y - p.y * q.x; }
+double cross(const point& p, const point& q) { return p.x * q.y - p.y * q.x; }
 
-bool parallel(point a, point b, point c, point d) {
+bool parallel(const point &a, const point &b, const point &c, const point &d) {
   return abs(cross(a - b, c - d)) < EPS;
 }
-bool PointOnPolygon(vector<point> points, point p) {
+bool PointOnPolygon(const vector<point> &points, const point &p) {
   int i, j, nvert = points.size();
   for (i = 0, j = nvert - 1; i < nvert; j = i++) {
     if (dist(points[i], p) < EPS or dist(points[j], p) < EPS) {
@@ -299,12 +293,13 @@ bool PointOnPolygon(vector<point> points, point p) {
   return false;
 }
 
-bool PointInPoly(point p, vector<point> poly) {
+bool PointInPoly(const point &p, const vector<point> &poly) {
   return PointOnPolygon(poly, p) or PointInPolygon(poly, p);
 }
 
 // Checks if [a,b] intersects [c,d]
-bool intersect(point p, point p2, point q, point q2, point &inter){
+bool intersect(const point &p, const point &p2, const point &q, const point &q2,
+               point &inter) {
   auto r = p2 - p;
   auto s = q2 - q;
   auto rxs = cross(r, s);
@@ -312,26 +307,26 @@ bool intersect(point p, point p2, point q, point q2, point &inter){
 
   bool is_rxs_0 = abs(rxs) < EPS;
   bool is_qpxr_0 = abs(qpxr) < EPS;
-  if (is_rxs_0 and is_qpxr_0){
+  if (is_rxs_0 and is_qpxr_0) {
     return (0 <= (q - p) * r && (q - p) * r <= r * r) ||
            (0 <= (p - q) * s && (p - q) * s <= s * s);
   }
-  if (is_rxs_0 and not is_qpxr_0){
+  if (is_rxs_0 and not is_qpxr_0) {
     return false;
   }
 
-  auto t = cross((q - p),s)/rxs;
-  auto u = cross((q - p),r)/rxs;
+  auto t = cross((q - p), s) / rxs;
+  auto u = cross((q - p), r) / rxs;
 
-  if (not is_rxs_0 and (0 <= t and t <= 1) and (0 <= u and u <= 1)){
+  if (not is_rxs_0 and (0 <= t and t <= 1) and (0 <= u and u <= 1)) {
     inter = p + r * t;
     return true;
   }
   return false;
-
 }
 
-bool intersects(point a, point b, vector<point> poly, point &inter, ull &next) {
+bool intersects(const point &a, const point &b, const vector<point> &poly,
+                point &inter, ull &next) {
   for (ull i = 0, j = 1; i < poly.size(); ++i, j = (i + 1) % poly.size()) {
     if (intersect(a, b, poly[i], poly[j], inter)) {
       next = j;
@@ -341,7 +336,8 @@ bool intersects(point a, point b, vector<point> poly, point &inter, ull &next) {
   return false;
 }
 
-bool union_polys(vector<point> poly1, vector<point> poly2, vector<point> &out) {
+bool union_polys(const vector<point> &poly1, const vector<point> &poly2,
+                 vector<point> &out) {
   ull outside_pos;
   bool found = false;
   for (ull i = 0; i < poly1.size(); ++i) {
@@ -375,7 +371,7 @@ bool union_polys(vector<point> poly1, vector<point> poly2, vector<point> &out) {
   ull current_pos = outside_pos;
   ull next_pos;
   vector<point> output;
-  output.push_back(poly1[current_pos]);
+  output.emplace_back(poly1[current_pos].x, poly1[current_pos].y);
   bool has_intersection = false;
   do {
     if (current_poly == 1) {
@@ -385,14 +381,13 @@ bool union_polys(vector<point> poly1, vector<point> poly2, vector<point> &out) {
       if (intersects(poly1[current_pos], poly1[next_pos], poly2, intersection,
                      next)) {
         current_poly = 2;
-        output.push_back(intersection);
-        output.push_back(poly2[next]);
+        output.emplace_back(intersection.x, intersection.y);
+        output.emplace_back(poly2[next].x, poly2[next].y);
         current_pos = next;
         has_intersection = true;
-      }
-      else {
+      } else {
         current_pos = next_pos;
-        output.push_back(poly1[current_pos]);
+        output.emplace_back(poly1[current_pos].x, poly1[current_pos].y);
       }
     } else {
       next_pos = (current_pos + 1) % poly2.size();
@@ -401,20 +396,19 @@ bool union_polys(vector<point> poly1, vector<point> poly2, vector<point> &out) {
       if (intersects(poly2[current_pos], poly2[next_pos], poly1, intersection,
                      next)) {
         current_poly = 1;
-        output.push_back(intersection);
-        output.push_back(poly1[next]);
+        output.emplace_back(intersection.x, intersection.y);
+        output.emplace_back(poly1[next].x, poly1[next].y);
         current_pos = next;
         has_intersection = true;
-      }
-      else {
+      } else {
         current_pos = next_pos;
-        output.push_back(poly2[current_pos]);
+        output.emplace_back(poly2[current_pos].x, poly2[current_pos].y);
       }
     }
 
   } while (current_pos != outside_pos || current_poly == 2);
 
-  if (not has_intersection){
+  if (not has_intersection) {
     return false;
   }
   output.erase(output.end() - 1); // Erase last one
@@ -444,27 +438,28 @@ int main() {
     printf("%.8Lf ", total_area);
 
     while (true) {
-      if (polys.size() == 1){
+      if (polys.size() == 1) {
         break;
       }
       vector<point> tmp;
       bool unioned = false;
-      for (ull k = 0, l = 1; k < polys.size(); ++k, l = (k + 1) % polys.size()) {
-        if (union_polys(polys[k], polys[l], tmp)){
-          if (l > k){
+      for (ull k = 0, l = 1; k < polys.size();
+           ++k, l = (k + 1) % polys.size()) {
+        if (union_polys(polys[k], polys[l], tmp)) {
+          if (l > k) {
             polys.erase(polys.begin() + k);
             polys.erase(polys.begin() + l);
-          }
-          else {
+          } else {
             polys.erase(polys.begin() + l);
             polys.erase(polys.begin() + k);
           }
-          polys.push_back(tmp);
+          polys.emplace_back(tmp);
+          tmp.clear();
           unioned = true;
           break;
         }
       }
-      if (not unioned){
+      if (not unioned) {
         break;
       }
     }

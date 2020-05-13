@@ -1,0 +1,12 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+Taking inspiration from some chapter in a book about computational geometry related to convex polygons, we use a "naive" algorithm to iterate over all bounding rectangles of the given convex polygon, look at their edges and pick the smallest one.
+First, we explain why this works - since we need to insert a convex polygon into a rectangle slot, it can be as large as any edge of any bounding rectangle of the polygon, that it because if the rectangle bounds the polygon, it will pass "through" a same rectangle side without getting stuck.
+Of course, since we want the smallest slot possible, we take the smallest edge out of all bounding rectangles.
+The algorithm to find all rectangels is as follows:
+
+We use the fact that any bounding rectangle has at least one edge parallel to at least one edge of the polygon. We iterate over all neighboring point pairs (we do this counter-clockwise, and denote the first point as "origin") on the polygon, create a vector out of their edge (which we denote as "base"), and a vector perpendicular to it. (which we denote as "perp_base")
+This creates a new "axis" on which the rectangle will be on. Now, we need to take a perpendicular from any point on the polygon to base and perp_base to find out the minimum edge of this rectagle.
+Thus, we iterate over any other point on the polygon, and project the vector from the origin to the point on both the base and the perp_base, while saving variables min_base, max_base and max_base_perp that denote the minimum and maximum points of the base edge, and the maximum point of the perp base edge respectively (It is garuanteed that the minimum point of the perp base is 0, because it resides on the regular base).
+
+This algorithm assumes that the polygon is ordered counter-clockwise so we reverse the input. (Another solution would be to reverse the perpendicular direction but this requires more changes to the algorithm)

@@ -11,10 +11,6 @@ set(MAIN main.cpp)
 
 
 add_executable(l6A lesson6/A.cpp)
-add_executable(l6B lesson6/B.cpp)
-add_executable(l6C lesson6/C.cpp)
-add_executable(l6D lesson6/D.cpp)
-add_executable(l6E lesson6/E.cpp)
 add_executable(l6F lesson6/F.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
@@ -42,3 +38,5 @@ add_executable(l6F lesson6/F.cpp)
 #add_executable(hw1F hw1/uva_F.cpp)
 #add_executable(hw1G hw1/uva_G.cpp)
 #add_executable(hw1H hw1/uva_H.cpp)
+add_executable(hw1I hw1/uva_I.cpp)
+add_executable(hw1J hw1/uva_J.cpp)

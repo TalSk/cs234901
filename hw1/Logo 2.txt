@@ -1,0 +1,10 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+We first get all the input to find out what the question mark represents: angle or distance.
+Over the exercise we utilize a function we denote as "walk", that executes all commands in a global vector of commands in order, and outputs the point the robot ends on.
+We also know that the robot is supposed to start and finish its patrol on the same spot, which we denote as the axis origin - (0,0), and it starts face to the positive x-axis direction, which we respectively denote as angle 0. 
+
+If we need to fill a distance, we use the fact that if we denote all robot movements as vectors, we know that since it ends up in the same spot, the sum of all vectors should be zero vector.
+Therefore, we fill the empty distance movement as 0, and see where the robot ends up. The missing distance is exactly the distance of this point from the origin. (And since the supplied distance function actually calculates a vector's magnitude respecting the direction, we need to take its absolute value). 
+
+If we need to fill an angle, by noticing that the output must be an integer, we simply iterate over all possible integer angles (0-359), replace the question mark with the approriate angle walk. If we end up in the origin, this is the correct angle, output it.
