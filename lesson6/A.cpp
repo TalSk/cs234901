@@ -117,14 +117,21 @@ long double polys_union_area(const vector<vector<point>> &polys) {
           auto is_point2_ccw = ccw(poly1_point1, poly1_point2, poly2_point2);
           if ((is_point1_ccw < 0 and is_point2_ccw >= 0) or
               (is_point1_ccw >= 0 and is_point2_ccw < 0)) {
-            // We have an intersection! The position of intersection the segment
-            // is calculated by diving the areas of the parallelogram created by
-            // the other segment and each of the original points
+            // We might have an intersection! The position of intersection the
+            // segment is calculated by diving the areas of the parallelogram
+            // created by the other segment and each of the original points
             auto first_area = cross(toVec(poly2_point1, poly2_point2),
                                     toVec(poly2_point1, poly1_point1));
             auto second_area = cross(toVec(poly2_point1, poly2_point2),
                                      toVec(poly2_point1, poly1_point2));
             auto percent = second_area / (second_area - first_area);
+            // The position can be lower than 0 or bigger than 1 (in case the
+            // other segment points are on different sides but the segment
+            // itself does not intersect. In this case we just save the
+            // direction used in future calculation to get the correct area.
+            if (percent < 0) percent = 0;
+            else if (percent > 1) percent = 1;
+            
             if (is_point1_ccw < 0 and is_point2_ccw >= 0) {
               // First case, point1 is cw and point2 is ccw (or on the segment).
               intersections.emplace_back(percent, LTR);
@@ -150,13 +157,9 @@ long double polys_union_area(const vector<vector<point>> &polys) {
       ll intersections_counter = intersections[0].second;
       // We trim negative values and values over 1.0 (Will effectively be
       // ignored but are important for intersection counter.
-      previous = intersections[0].first < 0
-                     ? 0
-                     : intersections[0].first > 1 ? 1 : intersections[0].first;
+      previous = intersections[0].first;
       for (int l = 1; l < intersections.size(); ++l) {
-        current = intersections[l].first < 0
-                      ? 0
-                      : intersections[l].first > 1 ? 1 : intersections[l].first;
+        current = intersections[l].first;
         if (!intersections_counter) {
           total_areas += current - previous;
         }
