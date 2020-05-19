@@ -193,6 +193,13 @@ int main() {
     }
     printf("%.8Lf ", total_area);
 
+    /* 
+    Note: I found this algorithm online, but it was interesting enough I had to find a solution after failing myself.
+    This is my own implmentation of it, after understanding most of it (still having a problem understanding why the direction 
+    of the "outside" intersections are relevant).
+    If this does not qualify as solving the problem, I don't mind it not being counted towards my number of probelms solved.
+    */
+
     auto total_union_area = polys_union_area(polys);
     printf("%.8Lf\n", total_union_area);
   }
