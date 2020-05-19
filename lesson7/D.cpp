@@ -148,8 +148,7 @@ int main() {
     vector<string> patterns;
     string temp;
 
-    // cin.ignore();
-//    cin >> ws;
+    cin >> ws;
     getline(cin, temp);
     for (int i = 0; i < n; ++i) {
       getline(cin, temp);

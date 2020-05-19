@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <bitset>
+#include <cassert>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -26,120 +27,112 @@ typedef vector<pair<int, int>> vii;
 typedef vector<vector<pair<int, int>>> vvii;
 typedef long long ll;
 
-#define MAX_N 200010
+#define MAX_LEN 60
+char key[5][5];
+vector<pair<int, int>> char_to_index(26, {0, 0});
 
-class SuffixArray {
-private:
-  vi RA; // rank array
-
-  void countingSort(int k) {          // O(n)
-    int maxi = max(300, n);           // up to 255 ASCII chars
-    vi c(maxi, 0);                    // clear frequency table
-    for (int i = 0; i < n; ++i)       // count the frequency
-      ++c[i + k < n ? RA[i + k] : 0]; // of each integer rank
-    for (int i = 0, sum = 0; i < maxi; ++i) {
-      int t = c[i];
-      c[i] = sum;
-      sum += t;
+void generate_key(const char *keyword) {
+  // keyword is uppercase without spaces.
+  vector<bool> seen(26, false);
+  vector<char> t_key;
+  for (int i = 0; i < strlen(keyword); ++i) {
+    char cur = keyword[i];
+    if (cur == 'J') {
+      cur = 'I';
     }
-    vi tempSA(n);
-    for (int i = 0; i < n; ++i) // sort SA
-      tempSA[c[SA[i] + k < n ? RA[SA[i] + k] : 0]++] = SA[i];
-    swap(SA, tempSA); // update SA
-  }
-
-  void constructSA() { // can go up to 400K chars
-    SA.resize(n);
-    iota(SA.begin(), SA.end(), 0); // the initial SA
-    RA.resize(n);
-    for (int i = 0; i < n; ++i)
-      RA[i] = T[i];                   // initial rankings
-    for (int k = 1; k < n; k <<= 1) { // repeat log_2 n times
-      // this is actually radix sort
-      countingSort(k); // sort by 2nd item
-      countingSort(0); // stable-sort by 1st item
-      vi tempRA(n);
-      int r = 0;
-      tempRA[SA[0]] = r;          // re-ranking process
-      for (int i = 1; i < n; ++i) // compare adj suffixes
-        tempRA[SA[i]] = // same pair => same rank r; otherwise, increase r
-            ((RA[SA[i]] == RA[SA[i - 1]]) &&
-             (RA[SA[i] + k] == RA[SA[i - 1] + k]))
-                ? r
-                : ++r;
-      swap(RA, tempRA); // update RA
-      if (RA[SA[n - 1]] == n - 1)
-        break; // nice optimization
+    if (not seen[cur - 'A']) {
+      t_key.push_back(cur);
+      seen[cur - 'A'] = true;
     }
   }
-
-  void computeLCP() {
-    vi Phi(n);
-    vi PLCP(n);
-    PLCP.resize(n);
-    Phi[SA[0]] = -1;                     // default value
-    for (int i = 1; i < n; ++i)          // compute Phi in O(n)
-      Phi[SA[i]] = SA[i - 1];            // remember prev suffix
-    for (int i = 0, L = 0; i < n; ++i) { // compute PLCP in O(n)
-      if (Phi[i] == -1) {
-        PLCP[i] = 0;
-        continue;
-      } // special case
-      while ((i + L < n) && (Phi[i] + L < n) && (T[i + L] == T[Phi[i] + L]))
-        L++; // L incr max n times
-      PLCP[i] = L;
-      L = max(L - 1, 0); // L dec max n times
+  for (int j = 0; j < seen.size(); ++j) {
+    if (seen[j] == false and (char)('A' + j) != 'J') {
+      t_key.push_back((char)('A' + j));
     }
-    LCP.resize(n);
-    for (int i = 0; i < n; ++i) // compute LCP in O(n)
-      LCP[i] = PLCP[SA[i]];     // restore PLCP
   }
-
-public:
-  const char *T; // the input string
-  const int n;   // the length of T
-  vi SA;         // Suffix Array
-  vi LCP;        // of adj sorted suffixes
-
-  SuffixArray(const char *_T, const int _n) : T(_T), n(_n) {
-    constructSA(); // O(n log n)
-    computeLCP();  // O(n)
+  assert(t_key.size() == 25);
+  for (int k = 0; k < 5; ++k) {
+    for (int i = 0; i < 5; ++i) {
+      key[k][i] = t_key[5 * k + i];
+      char_to_index[t_key[5 * k + i]] = {k, i};
+    }
   }
+}
 
-  ~SuffixArray() = default;
-};
+char out[MAX_LEN];
 
-char T[MAX_N];
-char P[MAX_N];
-char LRS_ans[MAX_N];
-char LCS_ans[MAX_N];
-
-bool b(bool a) { return true; }
+const char *decrypt(const char *cipher) {
+  memset(out, 0, MAX_LEN);
+  int pos = 0;
+  for (int i = 0; i < strlen(cipher);) {
+    char first = cipher[i] == 'J' ? 'I' : cipher[i];
+    char second;
+    if (i + 1 == strlen(cipher)) {
+      second = 'X';
+    } else {
+      second = cipher[i + 1] == 'J' ? 'I' : cipher[i + 1];
+      if (second == first) {
+        second = 'X';
+      } else {
+        i++;
+      }
+    }
+    i++;
+    if (first == 'X' and second == 'X') {
+      out[pos] = 'Y';
+      pos++;
+      out[pos] = 'Y';
+      pos++;
+    } else {
+      auto first_index = char_to_index[first];
+      auto second_index = char_to_index[second];
+      if (first_index.first == second_index.first) {
+        // Same row.
+        out[pos] = key[first_index.first][(first_index.second + 1) % 5];
+        pos++;
+        out[pos] = key[second_index.first][(second_index.second + 1) % 5];
+        pos++;
+      } else if (first_index.second == second_index.second) {
+        // Same column.
+        out[pos] = key[(first_index.first + 1) % 5][second_index.second];
+        pos++;
+        out[pos] = key[(second_index.first + 1) % 5][second_index.second];
+        pos++;
+      } else {
+        out[pos] = key[first_index.first][second_index.second];
+        pos++;
+        out[pos] = key[second_index.first][first_index.second];
+        pos++;
+      }
+    }
+  }
+  return out;
+}
 
 int main() {
-  //  string s;
-  //  while (cin >> s){
-  //    SuffixArray S(s.c_str(), s.size());
-  //    printf("T = '%s'\n", s.c_str());
-  //    printf(" i SA[i] LCP[i]   Suffix SA[i]\n");
-  //    for (int i = 0; i < s.size(); ++i)
-  //      printf("%2d    %2d    %2d    %s\n", i, S.SA[i], S.LCP[i],
-  //      s.c_str()+S.SA[i]);
-  //    cout << endl;
-  //  }
-  bool a = true;
-  while (a) {
-    scanf("%s", T);
-    int n = (int)strlen(T);
-    T[n++] = '$';
-    SuffixArray S(T, n);
-    printf("T = '%s'\n", T);
-    printf(" i SA[i] LCP[i]   Suffix SA[i]\n");
-    for (int i = 0; i < n; ++i)
-      printf("%2d    %2d    %2d    %s\n", i, S.SA[i], S.LCP[i], T + S.SA[i]);
-    cout << endl;
-    a = b(a);
-    memset(T, 0, MAX_N);
+  ll n;
+  while (cin >> n) {
+    if (n == 0) {
+      break;
+    }
+    vector<string> plains;
+    string curr;
+    cin >> ws;
+    getline(cin, curr);
+    curr.erase(remove_if(curr.begin(), curr.end(), ::isspace), curr.end());
+    transform(curr.begin(), curr.end(), curr.begin(), ::toupper);
+    generate_key(curr.c_str());
+
+    for (int i = 0; i < n; ++i) {
+      getline(cin, curr);
+      curr.erase(remove_if(curr.begin(), curr.end(), ::isspace), curr.end());
+      transform(curr.begin(), curr.end(), curr.begin(), ::toupper);
+      plains.push_back(curr);
+    }
+
+    for (int j = 0; j < n; ++j) {
+      cout << decrypt(plains[j].c_str()) << endl;
+    }
   }
   return 0;
 }
