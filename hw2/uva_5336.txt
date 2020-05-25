@@ -1,0 +1,7 @@
+TODO@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
+Noa Goldberg, Hadas Orgad, Tal Skverer
+The algorithm builds a suffix array for both strings by concatenating them (with @ representing a delimeter between the first and second string).
+Then, the suffix array will contain suffixes from both strings. If two consectuive suffixes originated from each string, their common prefix will be a common substring between both strings, and therefore we can use the common suffix length array to get its size.
+To find the maximum size of a common substring, we just need to iterate over all possible pairs of subsequent suffixes, check that each of them belongs to different string (by finding an "@" in exactly one suffix), and save the maximal LCP we find, along with all indexes of suffixes with this LCP.
+In terms of complexity, we denote the size of the concatenated string as "N", we iterate over every possible suffix (total N suffixes), and for each pair try to find "@", resulting in a worst-case scenario of O(N^2).
+We did add another optimization, that we skip checking suffixes if their LCP is less than the current max.
