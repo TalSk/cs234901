@@ -127,7 +127,6 @@ int main(){
       int query = q[i];
       cout << S.SA[query] << " ";
     }
-// blabla
     int query = q[n-1];
     cout << S.SA[query];
     cout << endl;
