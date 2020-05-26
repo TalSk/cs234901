@@ -1,4 +1,4 @@
-TODO@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
+noa.goldberg@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
 Noa Goldberg, Hadas Orgad, Tal Skverer
 The algorithm builds a suffix array for both strings by concatenating them (with @ representing a delimeter between the first and second string).
 Then, the suffix array will contain suffixes from both strings. If two consectuive suffixes originated from each string, their common prefix will be a common substring between both strings, and therefore we can use the common suffix length array to get its size.
