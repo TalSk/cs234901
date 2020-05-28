@@ -112,16 +112,16 @@ void find_indices(string &text, string &pat, SuffixArray &S, ull n, ll index) {
     index++;
   }
   // Go backward
-  index = orig;
-  while (index > 0) {
-    if (S.LCP[index] < pat.size()) {
+  index = orig - 1;
+  while (index >= 0) {
+    if (S.LCP[index + 1] < pat.size()) {
       break;
     }
-    if (S.SA[index - 1] >= n) {
+    if (S.SA[index] >= n) {
       index--;
       continue;
     }
-    found_indices.push_back(S.SA[index - 1]);
+    found_indices.push_back(S.SA[index]);
     index--;
   }
 
