@@ -1,0 +1,9 @@
+noa.goldberg@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
+Noa Goldberg, Hadas Orgad, Tal Skverer
+Obvervation: For a given indices i,j, the longest common prefix is obainted by getting the minimum value between the respective indices of the LCP array.
+Therefore we reduced the problem to finding the minimal value in a range of an array of numbers, which can be solved efficiently with a segment tree.
+In our algorithm, for a given string, we built the suffix array, computed a map between indices of the string to their respective indices in the LCP array, and built a segment tree for the LCP array.
+Then upon receiviong a query, we conducted a query of the respective indices on the segment tree.
+
+We denote n = length(s) where s is the given string, and q is the number of queries. Thus, the complexity of this algorithm is O(n * log(n) + q * log(n)):
+O(n * log(n)) to build the suffix array and segment tree, O(n) to build the index map, and log(n) for each query.

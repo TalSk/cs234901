@@ -1,0 +1,5 @@
+noa.goldberg@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
+Noa Goldberg, Hadas Orgad, Tal Skverer
+We used a variation of the knapsack DP algorithm to solve this problem (with weights as "item values").
+Since the combined wieght will be at most 2000 (since 0 is always a valid possibility and will be closer to 1000), we ran the algorithm shown in class to solve for (n, 2000), then we looked at the result of f(n, 1000) (the maximum weight closest to 1000 from below), and used this lower distance L to iterate over all results from f(n, 1001) to f(n, 1000 + L) and try to find a bigger possible weight.
+As shown in class, the complexity of the knapsack DP algorithm is O(nC), which in our case is at most 1000 * 2000, plus up to 1000 iterations on f(n,c).

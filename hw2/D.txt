@@ -1,0 +1,8 @@
+noa.goldberg@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
+Noa Goldberg, Hadas Orgad, Tal Skverer
+To solve this problem, we iterated over all possible counterexamples from 1 to the sum of the two largest denominations, and checked whether the greedy algorithm returned a different result compared to a DP algorithm.
+Since the check is done iteratively over all possible values, we improved the algorithm's complexity by saving previous return values of the greedy and DP algorithms, which turned the greedy algorithm into a simple subtraction of the largest possible denomination, and the DP algorithm into a simple iteration over all coin values.
+If we find a counterexample, we print that the coin system is non-canonical, and otherwise canonical. 
+
+Thus, if we denote c_n as the largest denomination, and n the number of denominations, the complexity of this algorithm is at most O(2 * c_n * n).
+With the problem's parameters we can get up to 10^8 iterators, but the tests still pass.

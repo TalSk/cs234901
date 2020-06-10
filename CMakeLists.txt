@@ -10,12 +10,12 @@ set(HW1_FILES hw1/uva_A.cpp hw1/uva_B.cpp)
 set(MAIN main.cpp)
 
 
-add_executable(l9A lesson9/A.cpp)
-add_executable(l9B lesson9/B.cpp)
-add_executable(l9C lesson9/C.cpp)
-add_executable(l9D lesson9/D.cpp)
-add_executable(l9E lesson9/E.cpp)
 
+add_executable(l10A lesson10/A.cpp)
+add_executable(l10B lesson10/B.cpp)
+add_executable(l10C lesson10/C.cpp)
+add_executable(l10D lesson10/D.cpp)
+add_executable(l10E lesson10/E.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 #add_executable(lesson1e ${LESSON1_FILES})
@@ -47,6 +47,10 @@ add_executable(l9E lesson9/E.cpp)
 #add_executable(hw1I hw1/uva_I.cpp)
 #add_executable(hw1J hw1/uva_J.cpp)
 #add_executable(hw2A hw2/A.cpp)
+add_executable(hw2C hw2/C.cpp)
+add_executable(hw2D hw2/D.cpp)
+add_executable(hw2E hw2/E.cpp)
+add_executable(hw2F hw2/F.cpp)
 #add_executable(hw2B hw2/B.cpp)
 
 #add_executable(l7A lesson7/A.cpp)
@@ -59,3 +63,9 @@ add_executable(l9E lesson9/E.cpp)
 #add_executable(l8B lesson8/B.cpp)
 #add_executable(l8D lesson8/D.cpp)
 #add_executable(l8E lesson8/aspenavenue.cpp)
+
+#add_executable(l9A lesson9/A.cpp)
+#add_executable(l9B lesson9/B.cpp)
+#add_executable(l9C lesson9/C.cpp)
+#add_executable(l9D lesson9/D.cpp)
+#add_executable(l9E lesson9/E.cpp)

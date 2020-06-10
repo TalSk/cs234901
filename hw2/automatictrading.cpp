@@ -113,56 +113,118 @@ char P[MAX_N];
 char LRS_ans[MAX_N];
 char LCS_ans[MAX_N];
 
-ull binary_find(string &s, SuffixArray &sa, ull index) {
-  string to_find = s.substr(index);
-  ull low = 0, hi = sa.SA.size(), mid;
-  while (low < hi - 1) {
-    mid = (hi + low) / 2;
-    auto s_prime = s.substr(sa.SA[mid]);
-    if (s_prime < to_find) {
-      low = mid;
-    } else {
-      hi = mid;
-    }
-  }
-  mid = (hi + low) / 2;
-  if (s.substr(sa.SA[mid]) == to_find) {
-    return mid;
-  }
-  if (mid != s.size() and s.substr(sa.SA[mid + 1]) == to_find) {
-    return mid + 1;
-  }
-  if (mid != 0 and s.substr(sa.SA[mid - 1]) == to_find) {
-    return mid - 1;
-  }
-  assert(false);
+//ull binary_find(string &s, SuffixArray &sa, ull index) {
+//  string to_find = s.substr(index);
+//  ull low = 0, hi = sa.SA.size(), mid;
+//  while (low < hi - 1) {
+//    mid = (hi + low) / 2;
+//    auto s_prime = s.substr(sa.SA[mid]);
+//    if (s_prime < to_find) {
+//      low = mid;
+//    } else {
+//      hi = mid;
+//    }
+//  }
+//  mid = (hi + low) / 2;
+//  if (s.substr(sa.SA[mid]) == to_find) {
+//    return mid;
+//  }
+//  if (mid != s.size() and s.substr(sa.SA[mid + 1]) == to_find) {
+//    return mid + 1;
+//  }
+//  if (mid != 0 and s.substr(sa.SA[mid - 1]) == to_find) {
+//    return mid - 1;
+//  }
+//  assert(false);
+//}
+
+int minVal(int x, int y) { return (x < y)? x: y; }
+
+int getMid(int s, int e) { return s + (e -s)/2; }
+
+int RMQUtil(int *st, int ss, int se, int qs, int qe, int index)
+{
+  if (qs <= ss && qe >= se)
+    return st[index];
+
+  if (se < qs || ss > qe)
+    return INT32_MAX;
+
+  int mid = getMid(ss, se);
+  return minVal(RMQUtil(st, ss, mid, qs, qe, 2*index+1),
+                RMQUtil(st, mid+1, se, qs, qe, 2*index+2));
 }
 
-void find_common(string &s, SuffixArray &sa, ull i, ull j) {
-  auto i_prime = binary_find(s, sa, i);
-  auto j_prime = binary_find(s, sa, j);
-  //  cout << i << " -> " << i_prime << endl;
-  //  cout << j << " -> " << j_prime << endl;
-  ull minu = INT64_MAX;
-  for (int k = max(i_prime, j_prime); k > min(i_prime, j_prime); --k) {
-    minu = min(minu, (ull)sa.LCP[k]);
+int RMQ(int *st, int n, int qs, int qe)
+{
+  if (qs < 0 || qe > n-1 || qs > qe)
+  {
+    cout<<"Invalid Input";
+    return -1;
   }
-  cout << minu << endl;
+
+  return RMQUtil(st, 0, n-1, qs, qe, 0);
 }
+
+int constructSTUtil(int arr[], int ss, int se,
+                    int *st, int si)
+{
+  if (ss == se)
+  {
+    st[si] = arr[ss];
+    return arr[ss];
+  }
+
+  int mid = getMid(ss, se);
+  st[si] = minVal(constructSTUtil(arr, ss, mid, st, si*2+1),
+                  constructSTUtil(arr, mid+1, se, st, si*2+2));
+  return st[si];
+}
+
+int *constructST(int arr[], int n)
+{
+  int x = (int)(ceil(log2(n)));
+  int max_size = 2*(int)pow(2, x) - 1;
+  int *st = new int[max_size];
+
+  constructSTUtil(arr, 0, n-1, st, 0);
+
+  return st;
+}
+
+
 
 int main() {
   string s;
   while (cin >> s) {
+
+    strcpy(T, s.c_str());
+    T[s.size()] = '$';
+    SuffixArray S(T, s.size() + 1);
+
+    map<ull, ull> index_to_sa;
+    for (int l = 0; l < s.size() + 1; ++l) {
+      index_to_sa[S.SA[l]] = l;
+    }
+
+    auto lcp_array = new int[s.size() + 1];
+
+    for (int m = 0; m < s.size() + 1; ++m) {
+      lcp_array[m] = S.LCP[m];
+    }
+
+    auto st = constructST(lcp_array, s.size() + 1);
+
     ull q;
     cin >> q;
     ull i, j;
     for (int k = 0; k < q; ++k) {
       cin >> i >> j;
-      ull sum = 0;
-      while (i + sum != s.size() and j + sum != s.size() and s[i + sum] == s[j + sum]) {
-        sum++;
-      }
-      cout << sum << endl;
+      auto i_prime = index_to_sa[i];
+      auto j_prime = index_to_sa[j];
+      auto smaller = min(i_prime, j_prime);
+      auto bigger = max(i_prime, j_prime);
+      cout << RMQ(st, s.size() + 1, smaller + 1, bigger) << endl;
     }
   }
 }
