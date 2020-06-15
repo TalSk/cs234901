@@ -1,0 +1,6 @@
+noa.goldberg@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
+Noa Goldberg, Hadas Orgad, Tal Skverer
+We noticed that the solution to this problem is easily found by iterating over the maximin path - a path such that the weight of the lightest edge is maximal.
+As we learnt in class, this path is found by finding the path between vertex 0 to vertex n-1 on the maximum spanning tree, which can be found by utilizing the regular Kruskal algorithm with negative weights.
+The path itself was found using DFS (and by reverse-walk the parents array), and then iterating over all edges in the original graph, and marking them as blocked if they are incident to a vertex on the maximin path, but not part of the path.
+The total time complexity is O(E * log(V)) (Kruskal), which in our case is 1000 * log(1000) which is way below the limit.

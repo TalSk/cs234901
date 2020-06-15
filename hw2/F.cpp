@@ -313,19 +313,17 @@ vector<point> convex_hull(vector<point> Points) {
 // This is the second pseudo-code presented in
 // https://en.wikipedia.org/wiki/Rotating_calipers#Shamos's_algorithm as this is
 // much easier than dealing with angles in my opinion.
-vector<pair<ull, ull>> rotating_calipers(vector<point> &cp) {
+vector<pair<point, point>> rotating_calipers(vector<point> &cp) {
   // Special cases. Only actually calculate the calipers if there are at least
   // 3 points as the polygon.
 //  if (cp.size() == 1) {
-//    return {0,0};
+//    return 0;
 //  }
 //  if (cp.size() == 2) {
-//    return {0, 1};
+//    return dist(cp[0], cp[1]);
 //  }
 
   long double max_dist = 0;
-  vector<pair<ull, ull>> best_points;
-
   vector<pair<point, point>> antipodals;
   auto N = cp.size();
   int first_point = 1;
@@ -342,19 +340,9 @@ vector<pair<ull, ull>> rotating_calipers(vector<point> &cp) {
   // Start running from point 0 and the first point we found,
   // until either the first counter (i) reaches the first point or
   // the second counter (j) reaches the first point.
-  long double cur_dist;
   for (int i = 0, j = first_point; i <= first_point and j < N; ++i) {
     // Current points are antipodal.
-    cur_dist = dist(cp[i], cp[j]);
-    if (cur_dist > max_dist){
-      best_points.clear();
-      best_points.emplace_back(i, j);
-      max_dist = cur_dist;
-    }
-    else if (cur_dist == max_dist){
-      best_points.emplace_back(i, j);
-    }
-
+    max_dist = max(max_dist, dist(cp[i], cp[j]));
     antipodals.emplace_back(cp[i], cp[j]);
     // Increment j as long as the point it represents is antipodal
     // to the point represented by the i.
@@ -371,16 +359,7 @@ vector<pair<ull, ull>> rotating_calipers(vector<point> &cp) {
         break;
       }
       // Current points are antipodal.
-      cur_dist = dist(cp[i], cp[(j + 1) % N]);
-      if (cur_dist > max_dist){
-        best_points.clear();
-        best_points.emplace_back(i, j+1 % N);
-        max_dist = cur_dist;
-      }
-      else if (cur_dist == max_dist){
-        best_points.emplace_back(i, j+1 % N);
-      }
-
+      max_dist = max(max_dist, dist(cp[i], cp[(j + 1) % N]));
       antipodals.emplace_back(cp[i], cp[(j + 1) % N]);
       ++j;
     }
@@ -388,7 +367,7 @@ vector<pair<ull, ull>> rotating_calipers(vector<point> &cp) {
   // Due to the algorithm's way of calculating things, the antipodals vector can
   // include duplicate points or the same point twice. If used, remove them.
 
-  return best_points;
+  return antipodals;
 }
 
 int main(){
@@ -407,27 +386,35 @@ int main(){
       cout << 0 << endl;
       continue;
     }
+    auto antipodal_points = rotating_calipers(ch);
     long double best_area = 0;
-    auto n = ch.size();
-    for (int a = 0; a < n; ++a) {
-      int b = a + 1;
-      auto b_p = b % n;
-      for (int c = a + 2; c < a + n; ++c) {
-        auto c_p = c % n;
-
-        auto curr_area = area(ch[a], ch[b_p], ch[c_p]);
-        while(true){
-          b_p = (b_p + 1) % n;
-          if (area(ch[a], ch[b_p], ch[c_p]) < curr_area or b_p >= c_p){
-            break;
-          }
-          curr_area = area(ch[a], ch[b_p], ch[c_p]);
-        }
-
-        b_p = max((a + 1) % n, (b_p - 2) % n);
-        best_area = max(best_area, curr_area);
+    for(auto &pair_of_points : antipodal_points) {
+      for(auto &p : points) {
+        best_area = max(best_area, area(p, pair_of_points.first, pair_of_points.second));
       }
     }
+
+//    long double best_area = 0;
+//    auto n = ch.size();
+//    for (int a = 0; a < n; ++a) {
+//      int b = a + 1;
+//      auto b_p = b % n;
+//      for (int c = a + 2; c < a + n; ++c) {
+//        auto c_p = c % n;
+//
+//        auto curr_area = area(ch[a], ch[b_p], ch[c_p]);
+//        while(true){
+//          b_p = (b_p + 1) % n;
+//          if (area(ch[a], ch[b_p], ch[c_p]) < curr_area or b_p >= c_p){
+//            break;
+//          }
+//          curr_area = area(ch[a], ch[b_p], ch[c_p]);
+//        }
+//
+//        b_p = max((a + 1) % n, (b_p - 2) % n);
+//        best_area = max(best_area, curr_area);
+//      }
+//    }
 
     printf("%.10Lf\n", best_area / 2);
   }
