@@ -389,7 +389,7 @@ int main(){
     auto antipodal_points = rotating_calipers(ch);
     long double best_area = 0;
     for(auto &pair_of_points : antipodal_points) {
-      for(auto &p : points) {
+      for(auto &p : ch) {
         best_area = max(best_area, area(p, pair_of_points.first, pair_of_points.second));
       }
     }
