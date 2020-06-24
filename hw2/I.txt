@@ -1,0 +1,12 @@
+noa.goldberg@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
+Noa Goldberg, Hadas Orgad, Tal Skverer
+This is classic DP algorithm's 1 problem, the solution is given by denoting the function:
+f(low, high) = Minimum number of multiplication for the matrices A_low, ..., A_high, which is calculated using the formula:
+f(low, high) = for low<=i<high min(f(low, i) + cost + f(i+1, high))
+Where the minimum is over all i, and cost is the cost of matrix A_i being multiplied by the output matrix of f(low, i) and -then- by the output matrix of f(i+1,high), thus A_low[0] * A_i[1] * A_high[1]. (Since these are the resulting matrices' sizes).
+
+To build the output string, our function f also returns a string representing the matrices multiplication, which is built using the end case (low = high) returning "X" representing a matrix, and upon choosing the minimal i, we put the multiplication "x" between the left and right matrices (and add parenthesis).
+
+Using memoization, we are left with just N by N matrix, which for such a small N (maximum 10) is well in the allowed complexity zone.
+
+We wrap this up by building the output string by replacing every X with the matrix number in order (since they must not change).
