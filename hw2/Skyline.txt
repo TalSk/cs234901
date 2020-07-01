@@ -1,0 +1,73 @@
+noa.goldberg@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
+Noa Goldberg, Hadas Orgad, Tal Skverer
+
+
+Algorithm:
+==========
+new segment lists: old_list, list. 
+(segments are left and right (x,y) coordinates)
+
+for each building (curr, received as a segment from input):
+--------------------------------------------------------
+	added_area = 0.
+	sort old_list by x-value of left part of segment.
+
+	for each segment (seg) in old_list:
+	-----------------------------------
+		In case of no overlap with curr: add seg to list. continue.
+
+		overlapping segments have 4 main possibilities, described bellow. (note heights vary)
+
+		Option 1: out on right and out on left
+		+---------+
+		| +----+  |<-curr
+		| |    |<-seg
+		
+		add to list the segment of curr until seg on left. Where they overlap, add segments of curr or seg depending
+		on who is visible. this is up to 2 segments in case of a slope, for before and after
+		the intersection (one will be higher before and one after). Remove from curr the beginning of
+		curr until the x value of the end of seg. This is in case curr later overlaps with another
+		segment. 
+
+
+		Option 2: out on right and in on left
+		+------+   <-curr
+		| +-------+
+		| |       |<-seg
+		Similar to Option 1, only here we can remove curr completely, Seeing as in cannot overlap 
+		with any future segment.
+
+
+		Option 3: in on right and out on left
+		  +-------+
+		+------+  |<-curr
+		|      |<-seg
+
+		Similar to Option 1, except here at the left side add a segment of seg (not curr), up until the x-value of the
+		left side of curr. Remove from curr the beginning of curr until the x-value of the end (right) of seg, for future segments.
+
+
+		Option 4: in on right and in on left
+		  +-----+  <-curr
+		+---------+
+		|         |<-seg
+		Similar to Option 3, only here we can remove curr completely, Seeing as it cannot overlap with any future segment.
+
+
+		When removing parts of curr, add areas that are not blocked by seg are added to added_area. 
+		(calculated with area of trapezoid formula).
+
+
+	added_area += area of curr.
+	output result: added_area / new_building_area.
+	old_list = list.
+	clear list.
+
+
+Correctness comes from segment list maintains the outline of the skyline throughout the algorithm.
+
+Complexity: for each new building, we go over all current segments, considering the fact that not every segment can be 
+split for every new building, the average complexity is O(N^3), or even as good as O(N^2), both good enough knowing N<=100.
+ 
+
+

@@ -1,0 +1,10 @@
+noa.goldberg@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
+Noa Goldberg, Hadas Orgad, Tal Skverer
+
+To solve this problem, we implemented DP with memoization, and our state has for 3 variables: number of candies left to give, and the difference of weights the 2 children with less candies from the child with max candies. We don't hold the actual number of candies.
+Each value in the DP contains the minimum difference that can be achived for this state.
+For each state, we check 3 cases: if the candy was given to each of the children, and we update the variables in the next DP call according to the candy's weight.
+In the base case where the are no more candies to give, we give the minimum value between the 2 differences.
+To get the solution, we call DP with (n - 1, 0, 0).
+
+Complexity: the number of states we have for each test case is at most 32 * (32 * 20) * (32 * 20), which is very reasonable, and we compute every state at most once thanks to memoization.

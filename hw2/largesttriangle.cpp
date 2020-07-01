@@ -386,35 +386,28 @@ int main(){
       cout << 0 << endl;
       continue;
     }
-    auto antipodal_points = rotating_calipers(ch);
-    long double best_area = 0;
-    for(auto &pair_of_points : antipodal_points) {
-      for(auto &p : ch) {
-        best_area = max(best_area, area(p, pair_of_points.first, pair_of_points.second));
-      }
-    }
 
-//    long double best_area = 0;
-//    auto n = ch.size();
-//    for (int a = 0; a < n; ++a) {
-//      int b = a + 1;
-//      auto b_p = b % n;
-//      for (int c = a + 2; c < a + n; ++c) {
-//        auto c_p = c % n;
-//
-//        auto curr_area = area(ch[a], ch[b_p], ch[c_p]);
-//        while(true){
-//          b_p = (b_p + 1) % n;
-//          if (area(ch[a], ch[b_p], ch[c_p]) < curr_area or b_p >= c_p){
-//            break;
-//          }
-//          curr_area = area(ch[a], ch[b_p], ch[c_p]);
-//        }
-//
-//        b_p = max((a + 1) % n, (b_p - 2) % n);
-//        best_area = max(best_area, curr_area);
-//      }
-//    }
+   long double best_area = 0;
+   auto n = ch.size();
+   for (int a = 0; a < n; ++a) {
+     int b = a + 1;
+     auto b_p = b % n;
+     for (int c = a + 2; c < a + n; ++c) {
+       auto c_p = c % n;
+
+       auto curr_area = area(ch[a], ch[b_p], ch[c_p]);
+       while(true){
+         b_p = (b_p + 1) % n;
+         if (area(ch[a], ch[b_p], ch[c_p]) < curr_area or b_p >= c_p){
+           break;
+         }
+         curr_area = area(ch[a], ch[b_p], ch[c_p]);
+       }
+
+       b_p = max((a + 1) % n, (b_p - 2) % n);
+       best_area = max(best_area, curr_area);
+     }
+   }
 
     printf("%.10Lf\n", best_area / 2);
   }

@@ -1,0 +1,7 @@
+noa.goldberg@campus.technion.ac.il, orgad.hadas@campus.technion.ac.il, talsk@campus.technion.ac.il
+Noa Goldberg, Hadas Orgad, Tal Skverer
+The algorithm is based on a variation of the rotating calipers algorithm.
+We denote the current three points we look at as a, b and c. For each possible point a, the points b, c are initialized as the first two points after a.
+First, given two consecutive points on the convex hull a and c, they form largest triangle with the point b for which the area of the triangle with the point b+1 is smaller (similarly to how the version of the rotating calipers with the areas works).
+This still requires iterating over all possible point triplets, which is beyond the required complexity. We can cut the complexity using the following observation: Upon finding such maximum a and c, and moving to the next point (a + 1), we only need to maximally move the point b two places backwards on the convex hull, since the largest triangle cannot occur before this point.
+This causes the complexity to be O(n^2), and more specifically, n * (n + 3), which is well into the safe zone given n = 5000.
