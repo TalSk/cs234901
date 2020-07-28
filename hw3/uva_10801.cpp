@@ -46,7 +46,7 @@ void Dijkstra(const vvii &g, int s, vi &dist) {
     int d = front.first, u = front.second;
     if (d > dist[u])
       continue; // We may have found a shorter way to get to u after inserting
-                // it to q.
+    // it to q.
     // In that case, we want to ignore the previous insertion to q.
     for (ii next : g[u]) {
       int v = next.first, w = next.second;
@@ -86,6 +86,7 @@ int main() {
               {last_node, elevators_times[i] * (curr - last)});
         }
         last = curr;
+        // "Remember" all elevators that stop on this floor using a map.
         if (floor_to_elevators.count(curr) == 0) {
           floor_to_elevators[curr].assign(1, i);
         } else {
@@ -93,28 +94,35 @@ int main() {
         }
       }
     }
+
     for (int i = 0; i < 100; ++i) {
       if (floor_to_elevators.count(i) > 0) {
         // Connect all elevator nodes on this floor with weight 60.
         for (auto &x : floor_to_elevators[i]) {
           for (auto &y : floor_to_elevators[i]) {
-            if (x != y) {
-              auto x_prime = 1000 * x + i;
-              auto y_prime = 1000 * y + i;
-              graph[x_prime].push_back({y_prime, 60});
+            if (x == y) {
+              continue;
             }
+            auto x_prime = 1000 * x + i;
+            auto y_prime = 1000 * y + i;
+            graph[x_prime].push_back({y_prime, 60});
           }
         }
       }
     }
 
+    // In a case where no elevators stop on the first or k-th floor we can immediately stop here.
     if (floor_to_elevators.count(0) == 0 or floor_to_elevators.count(k) == 0) {
       cout << "IMPOSSIBLE" << endl;
     }
+
     int ans = INF;
+    // Go over all elevators that stop at floor 0.
     for (auto &x : floor_to_elevators[0]) {
       vi dist;
+      // Calculate the minimal distance between floor 0 of current elevator to all other nodes.
       Dijkstra(graph, 1000 * x + 0, dist);
+        // Take the minimum distnace out of found paths to the k-th floor (by iterating over all nodes that represent the k-th floor).
       for (auto &y : floor_to_elevators[k]) {
         ans = min(ans, dist[1000 * y + k]);
       }

@@ -1,0 +1,11 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+We make two important observations:
+1. Any unrecyclable material cannot be removed, and thus recyclable items that are seperated by an unrecyclable will never be thrown together. Thus, we split the material list to multiple sub-lists containing only the consecutive recyclable items, then process the minimum number of moves each require to clear and add them up to get the result.
+2. Consecutive same recyclable materials in the input can be ignored, since we will always want to get rid of all of them in one move.
+Thus we use above observations while getting the input.
+We then denote a recursive function f(i, j) - the minimum number of moves required to clear the current material list of items i to j (inclusive) from a list.
+This function can be calculated by either throwing the first item alone, or looking at any item in the list that is the same as the i-th item (we denote its position as x) and deciding to throw them together, "commiting" that we would throw all items from index i+1 to x-1 plus the cost of processing items from index x to j.
+Thus, f(i, j) = min(f(i+1,j) + 1, f(i+1, x - 1) + f(x, j) [for all x s.t. materials[i] == materials[x]]).
+Then, we receive all items, splitting and ignoring consecutive items (1. and 2.) for each sub-list we calculate f(0, list_size) and sum the results.
+For complexity, we can get at most N=99 recyclable materials without consecutive same materials, requiring (by using memoization) up to O(N^2) calls, which is easily within the okay-zone.

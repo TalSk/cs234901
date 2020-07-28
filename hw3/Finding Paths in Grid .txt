@@ -1,0 +1,12 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+Notice that a transition between line i and i+1 is some permutation of the line with 4 players.
+We then imagine the space of all possible states of a line, and create a matrix representing all paths of length 1 between each two state that can be reached using valid moves, such that cell [i][j] is 1 if it is possible to transition from state number i to state number j (the numbering is incremental and meaningless, we also save a map between each number and its state). This matrix is constant as per the question's defined valid moves.
+
+Then, as we learnt, this matrix to the k-th power cell [i][j] represents the number of paths between state number i and state number j of length k, which is exactly what we need!
+
+* At the beginning I represented a state using a 7-bit number (as it seemed to fit the binary board), which was easier to work with but required a 255 by 255 matrix where most states are not even valid (since only those with exactly 4 ones are valid). This implementation sadly got a "time limit exceeded" error, so I changed it into the minimum amount possible (7 choose 4 = 35).
+
+We thus create a matrix of 35 by 35 containing 1 in [i][j] for a valid state transition as explained above. 
+We then receieve N, raise the matrix to the N-th power, get the starting state and sum over all possible paths between the starting state number and any other possible final state numbers (one of the 35).
+Denoting s=35, the complexity is as follows: to create the matrix - O(s^2), to raise it to the N-th power - O(s^3 * log(N)) (due to the naive matrix multiplication), to sum all required values - O(s). Total: O(s^3 * log(N)), which in the worst case is 35^3 * log(1000000000) = ~900,000 which is fine.

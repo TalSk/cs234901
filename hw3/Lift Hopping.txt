@@ -1,0 +1,12 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+* Note - this question doesn't make sense because it also accepts cases where the elevators "teleport", such as the given 3rd example, where you leave elevator 1, go up using elevator 2 and enter elevator 1 again even though it wouldn't be able to reach this floor quick enough (otherwise we would just take it all the way). This was very confusing, and I tried solving it for the logical case for quite a while.
+
+Anyway, we model this problem using a graph. Starting by denoting our vertices - floor j for which an elevator i can reach receives the number 1000 * i + j.
+(Thus the maximum number of a node in a graph can be 5100, we used 6000 for safety).
+We then create all these nodes, then connect consecutive floors for each elevator with the time it takes for this elevator to go between them (both directions, since we essentially want an undirected graph).
+We also create a map between each floor and all elevators that are on it. We use this map to go over all floors for which multiple elevators stop at and connect their respective nodes with weight 60 (to indicate an elevator switch that takes a minute).
+Then, we look at all minimal path from floor 0 of any elevator that stops there (1000 * i for a relevant elevator i) to floor k of any elevator (1000 * i + k) using Dijkstra's algorithm, and print the found length (or 'IMPOSSIBLE' if no path was found, or if there weren't any elevators that stop on the first and k-th floor in the first place).
+
+In terms of complexity, we iterate over all possible floors (maximum 100) for all possible elevators (maximum 5), then over all floors that contain multiple elevators (maximum 100 * 5 ^ 2), and then Dijkstra's algorithm on a graph which is O(E * log V) (maximum 100 * 5 nodes and 2 * (100 * 5 + (5 choose 2) * 100) edges) up to 5 times. So, in total:
+500 + 2500 + 5 * 3000 * log(500) = ~100,000.

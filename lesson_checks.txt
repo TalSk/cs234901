@@ -1,12 +1,12 @@
-Lesson 1 late - 4/4 (3) - 
+Lesson 1 late - 4/4 (3) - Appealed
 uva_156 (D) - runtime error -  wrong file submitted, had return 1.
-Lesson 2 - 4/4 (2) -  Applied
+Lesson 2 - 4/4 (2) -  Appealed
 uva_11286 (A) - wrong answer - Passing in Kattis, they checked on UVA.
 uva_11690 (D) - runtime error - Passing in Kattis, they checked on UVA.
 Lesson 2 late - 0/4 √
 Lesson 3 - 1/4 √
 Lesson 3 late - 3/4 √
-Lesson 4 - 4/5 (2) - Applied
+Lesson 4 - 4/5 (2) - Appealed
 candydistribution (B) - wrong answer - wrong file submitted.
 inversefactorial (A) - compile error - I get accepted?
 Lesson 4 late - 1/5 √

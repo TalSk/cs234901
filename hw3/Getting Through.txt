@@ -1,0 +1,12 @@
+talsk@campus.technion.ac.il
+Tal Skverer
+We do a binary search to find the maximum radius that can pass through the room. For this, we need to define a boolean function f that returns whether we can fit a circle of radius r through the room.
+
+Then, given some radius r and n sensors, we find whether or not the room is passable (the function f) using the following algorithm: we initialize a union-find structure with n + 2 members (n sensors and two walls).
+We then union every two sensors that cannot contain a circle of radius r between them, by checking that the distance between their centers is less then their radiuses combined plus the proposed circle's diameter (r * 2).
+We also union any sensor that is close enough to either wall of the room, at x = 0 and x = w which are represented by the members n and n+1 respectively, by checking if the radius of the sensor plus the diameter of the proposed circle is larger than the distance between the sensor and the wall (either the x position or w minus x).
+Then, the walls are not in the same group if and only if there's enough space to pass through a circle of radius r.
+
+Complexity-wise, we do a binary search in the range 0 to w/2 (which is the maximum size of a circle in a room of width w), each iteration causes a call to a function that checks whether this radius is possible, in O(n^2 * log*(n+2)) (log*=log star). Thus, in total, O(log(w/2) * n^2 * log*(n+2)). In the worst case, w=100,000, n=1,000 and for our purposes log*(n) is less than 6, we get approximately 65,000,000. 
+This is above the rule of thumb, but this question has a 19 seconds (!) time limit, and the tests pass.
+* Note: I started the solution by what I feel was a more elegant approach - generating a graph on which a connection represents an impassable sensor pair and running BFS to find if there's a path between the walls, but when it didn't work, I switched to union-find thinking it is a complexity issue. At the end it happened to be something with printing the result, so this approach should still work.
